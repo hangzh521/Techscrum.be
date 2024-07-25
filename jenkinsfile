@@ -1,0 +1,98 @@
+pipeline {
+    agent { label 'node1' }
+    
+    tools {
+        nodejs "nodejs"
+    }
+
+    
+    environment {
+    AWS_DEFAULT_REGION = 'ap-southeast-2'
+    ECR_REPO = 'techscrum'
+    IMAGE_TAG = 'latest'
+    ECR_REGISTRY = '271584491311.dkr.ecr.ap-southeast-2.amazonaws.com/techscrum'
+    }
+
+    stages {
+
+        // stage('SonarQube Scan') {
+        //     steps {
+        //      script {
+        //        def scannerHome = tool 'SonarScannerBackend'
+        //        withSonarQubeEnv('SonarQube Server Backend') {
+        //         sh "${scannerHome}/bin/sonar-scanner"   
+        //       }
+        //     }
+        //   }
+        // }
+        
+        // stage("Quality Gate") {
+        //     steps {
+        //       timeout(time: 2, unit: 'MINUTES') {
+        //         waitForQualityGate abortPipeline: true
+        //      }
+        //    }
+        // }
+        
+        stage('Install') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        
+        stage('build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('Lint') {
+            steps {
+                sh 'npm run lint'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm run test'
+            }
+        }
+
+        stage('Build Docker Image') {
+            environment {
+                ENVIRONMENT = credentials('ENVIRONMENT')
+                NAME = credentials(' NAME')
+                PORT = credentials('PORT')
+                API_PREFIX = credentials('API_PREFIX')
+                AWS_REGION = credentials('AWS_REGION')
+                AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+                AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+                ACCESS_SECRET = credentials('ACCESS_SECRET')
+                EMAIL_SECRET = credentials('EMAIL_SECRET')
+                FORGET_SECRET = credentials('FORGET_SECRET')
+                LIMITER = credentials('LIMITER')
+                PUBLIC_CONNECTION = credentials('PUBLIC_CONNECTION')
+                TENANTS_CONNECTION = credentials('TENANTS_CONNECTION')
+                MAIN_DOMAIN = credentials('MAIN_DOMAIN')
+                DEVOPS_MODE = credentials('DEVOPS_MODE')
+                AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE = credentials('AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE')
+            }
+
+            steps {
+              sh 'docker build --build-arg ENVIRONMENT=${ENVIRONMENT} --build-arg  NAME=${NAME} --build-arg PORT=${PORT} --build-arg API_PREFIX=${API_PREFIX} --build-arg AWS_REGION=${AWS_REGION} --build-arg AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --build-arg AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} --build-arg ACCESS_SECRET=${ACCESS_SECRET} --build-arg EMAIL_SECRET=${EMAIL_SECRET} --build-arg FORGET_SECRET=${FORGET_SECRET} --build-arg LIMITER=${LIMITER} --build-arg PUBLIC_CONNECTION=${PUBLIC_CONNECTION} --build-arg TENANTS_CONNECTION=${TENANTS_CONNECTION} --build-arg MAIN_DOMAIN=${MAIN_DOMAIN} --build-arg DEVOPS_MODE=${DEVOPS_MODE} --build-arg AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE=${AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE} -t crankbit:latest .'
+            }
+         }
+
+        stage('Push Docker Image to ECR') {
+            environment {
+                AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+                AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+            }
+           steps {
+                    sh 'aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 271584491311.dkr.ecr.ap-southeast-2.amazonaws.com'
+                    sh 'docker tag crankbit:latest 271584491311.dkr.ecr.ap-southeast-2.amazonaws.com/techscrum:latest'
+                    sh 'docker push 271584491311.dkr.ecr.ap-southeast-2.amazonaws.com/techscrum:latest'
+                }
+            }
+        }
+     }
