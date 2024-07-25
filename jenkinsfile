@@ -1,11 +1,6 @@
 pipeline {
     agent { label 'node1' }
     
-    tools {
-        nodejs "nodejs"
-    }
-
-    
     environment {
     AWS_DEFAULT_REGION = 'ap-southeast-2'
     ECR_REPO = 'techscrum'
