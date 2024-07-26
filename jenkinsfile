@@ -78,7 +78,7 @@ pipeline {
             }
 
             steps {
-              sh 'docker build --build-arg ENVIRONMENT=${ENVIRONMENT} --build-arg  NAME=${NAME} --build-arg PORT=${PORT} --build-arg API_PREFIX=${API_PREFIX} --build-arg AWS_REGION=${AWS_REGION} --build-arg AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --build-arg AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} --build-arg ACCESS_SECRET=${ACCESS_SECRET} --build-arg EMAIL_SECRET=${EMAIL_SECRET} --build-arg FORGET_SECRET=${FORGET_SECRET} --build-arg LIMITER=${LIMITER} --build-arg PUBLIC_CONNECTION=${PUBLIC_CONNECTION} --build-arg TENANTS_CONNECTION=${TENANTS_CONNECTION} --build-arg MAIN_DOMAIN=${MAIN_DOMAIN} --build-arg DEVOPS_MODE=${DEVOPS_MODE} --build-arg AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE=${AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE} -t techscrum:latest .'
+              sh 'docker build  --build-arg -u root:root --build-arg ENVIRONMENT=${ENVIRONMENT} --build-arg  NAME=${NAME} --build-arg PORT=${PORT} --build-arg API_PREFIX=${API_PREFIX} --build-arg AWS_REGION=${AWS_REGION} --build-arg AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --build-arg AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} --build-arg ACCESS_SECRET=${ACCESS_SECRET} --build-arg EMAIL_SECRET=${EMAIL_SECRET} --build-arg FORGET_SECRET=${FORGET_SECRET} --build-arg LIMITER=${LIMITER} --build-arg PUBLIC_CONNECTION=${PUBLIC_CONNECTION} --build-arg TENANTS_CONNECTION=${TENANTS_CONNECTION} --build-arg MAIN_DOMAIN=${MAIN_DOMAIN} --build-arg DEVOPS_MODE=${DEVOPS_MODE} --build-arg AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE=${AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE} -t techscrum:latest .'
             }
          }
 
