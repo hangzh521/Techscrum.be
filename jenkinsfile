@@ -6,7 +6,7 @@ pipeline {
     }
     
     environment {
-    DOCKER_HOST = 'tcp://13.236.80.1:4243'
+    DOCKER_HOST = 'tcp://3.107.89.213:4243'
     AWS_DEFAULT_REGION = 'ap-southeast-2'
     ECR_REPO = 'techscrum'
     IMAGE_TAG = 'latest'
@@ -89,7 +89,7 @@ pipeline {
                 AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
             }
            steps {
-                    sh '/usr/local/aws-cli/v2/current/bin/aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 271584491311.dkr.ecr.ap-southeast-2.amazonaws.com'
+                    sh 'aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 271584491311.dkr.ecr.ap-southeast-2.amazonaws.com'
                     sh 'docker tag techscrum:latest 271584491311.dkr.ecr.ap-southeast-2.amazonaws.com/techscrum:latest'
                     sh 'docker push 271584491311.dkr.ecr.ap-southeast-2.amazonaws.com/techscrum:latest'
                 }
