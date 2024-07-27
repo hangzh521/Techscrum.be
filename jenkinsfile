@@ -6,6 +6,7 @@ pipeline {
     }
     
     environment {
+    DOCKER_HOST = 'tcp://13.236.80.1:4243'
     AWS_DEFAULT_REGION = 'ap-southeast-2'
     ECR_REPO = 'techscrum'
     IMAGE_TAG = 'latest'
@@ -95,3 +96,7 @@ pipeline {
             }
         }
      }
+
+
+
+
