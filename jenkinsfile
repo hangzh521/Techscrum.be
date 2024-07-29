@@ -1,12 +1,12 @@
 pipeline {
-    agent { label 'docker-slave' }
+    agent { label 'node1' }
 
     tools {
       nodejs "nodejs"
     }
     
     environment {
-    DOCKER_HOST = 'tcp://3.26.197.238:4243'
+    //DOCKER_HOST = 'tcp://3.26.197.238:4243'
     AWS_DEFAULT_REGION = 'ap-southeast-2'
     ECR_REPO = 'techscrum'
     IMAGE_TAG = 'latest'
@@ -96,6 +96,9 @@ pipeline {
             }
         }
      }
+
+
+
 
 
 
