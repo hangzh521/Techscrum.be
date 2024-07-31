@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'jenkins-ec2-node' }
+    agent { label 'node1' }
 
     tools {
       nodejs "nodejs"
