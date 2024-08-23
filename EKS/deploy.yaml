@@ -1,0 +1,88 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backend
+---
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: techscrum
+  namespace: backend
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: techscrum
+  replicas: 2
+  strategy:
+   type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: techscrum
+    spec:
+      containers:
+      - name: techscrum-backend
+        image: 271584491311.dkr.ecr.ap-southeast-2.amazonaws.com/techscrum:latest
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        imagePullPolicy: Always
+        resources:
+            limits:
+              cpu: 1500m
+            requests:
+              cpu: 1000m
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: techscrum
+  namespace: backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: techscrum
+  minReplicas: 1 
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 10  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: techscrum
+  namespace: backend
+  # labels:
+  #   app.kubernetes.io/name: techscrum
+spec:
+  selector:
+    app.kubernetes.io/name: techscrum
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  # type: NodePort
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: backend
+  name: alb-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /api/v2/healthcheck
+    alb.ingress.kubernetes.io/success-codes: "200-399"
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: techscrum
+                port:
+                  number: 8000
