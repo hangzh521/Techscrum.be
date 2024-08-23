@@ -80,7 +80,7 @@ pipeline {
             }
 
             steps {
-              dir('EKS') {
+                sh 'cd ./EKS'
                 sh 'envsubst < ./EKS/deployment.yaml | kubectl apply -f -'
             }
         }
@@ -88,7 +88,7 @@ pipeline {
 
   }
 
-}
+
 
 
 
