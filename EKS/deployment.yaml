@@ -30,11 +30,11 @@ spec:
         imagePullPolicy: Always
         resources:
             limits:
-              cpu: 1000m
-              memory: "500Mi"
-            requests:
               cpu: 500m
-              memory: "200Mi"
+              memory: "256Mi"
+            requests:
+              cpu: 250m
+              memory: "128Mi"
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
