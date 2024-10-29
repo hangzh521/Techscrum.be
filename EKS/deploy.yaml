@@ -34,7 +34,7 @@ spec:
               memory: "200Mi"
             requests:
               cpu: 500m
-              memory: "500Mi"
+              memory: "50Mi"
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
